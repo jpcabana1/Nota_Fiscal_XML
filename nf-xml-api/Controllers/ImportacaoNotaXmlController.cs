@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,26 +28,58 @@ namespace nf_xml_api.Controllers
         [HttpPost]
         public string testeImportacao()
         {
-            var files = Request.Form.Files[0];
+            var file = Request.Form.Files[0];
             string chave = Request.Form["chave"];
             string hash = Request.Form["hash"];
 
-            var doc = new XmlDocument();
-            doc.Load(files.OpenReadStream());
+            var docXml = new XmlDocument();
+            docXml.Load(file.OpenReadStream());
 
-            if (doc.DocumentElement != null)
+            var docValidate = new XDocument();
+            using (var nodeReader = new XmlNodeReader(docXml))
             {
-                using (TextReader sr = new StringReader(doc.DocumentElement.OuterXml))
+                nodeReader.MoveToContent();
+                docValidate = XDocument.Load(nodeReader);
+            }
+
+            XmlSchemaSet schema = new XmlSchemaSet();
+            schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/procNFe_v4.00.xsd");
+            schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/nfe_v4.00.xsd");
+            schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/leiauteNFe_v4.00.xsd");
+            schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/tiposBasico_v4.00.xsd");
+            schema.Add("http://www.w3.org/2000/09/xmldsig#", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNF3E/xmldsig-core-schema_v1.01.xsd");
+            docValidate.Validate(schema, ValidationEventHandler);
+
+            // XmlReaderSettings Settings = new XmlReaderSettings();
+            // Settings.Schemas.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/procNFe_v4.00.xsd");
+            // Settings.Schemas.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/nfe_v4.00.xsd");
+            // Settings.Schemas.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/leiauteNFe_v4.00.xsd");
+            // Settings.Schemas.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/tiposBasico_v4.00.xsd");
+            // Settings.Schemas.Add("http://www.w3.org/2000/09/xmldsig#", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNF3E/xmldsig-core-schema_v1.01.xsd");
+            // Settings.ValidationEventHandler += new ValidationEventHandler(ValidationCallBack);
+            // Settings.ValidationType = ValidationType.Schema;
+            // try
+            // {
+            //     XmlReader validator = XmlReader.Create(XmlReader.Create(file.OpenReadStream()), Settings);
+            // }
+            // catch (Exception EX)
+            // {
+            //     string ex = EX.ToString();
+            // }
+
+            if (docXml.DocumentElement != null)
+            {
+                using (var reader = new StringReader(docXml.DocumentElement.OuterXml))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(nfeProc));
-                    nfeProc objDes = (nfeProc)serializer.Deserialize(sr);
+                    nfeProc objDes = (nfeProc)serializer.Deserialize(reader);
 
                     _context.ImportacaoNotaXmls.Add(new ImportacaoNotaXml()
                     {
                         XChave = chave,
                         XHash = hash,
                         XStatusImportacao = "PROCESSANDO",
-                        XmlNota = doc.DocumentElement.OuterXml
+                        XmlNota = docXml.DocumentElement.OuterXml
                     });
 
                     _context.SaveChanges();
@@ -80,7 +114,6 @@ namespace nf_xml_api.Controllers
                             XHash = hash
                         });
                     }
-                    _context.SaveChanges();
 
                     _context.TotalNota.Add(new TotalNotum()
                     {
@@ -108,9 +141,12 @@ namespace nf_xml_api.Controllers
                         VSt = objDes.proc.nfeProc.NFe.infNFe.total.ICMSTot.vST,
                         VTotTrib = objDes.proc.nfeProc.NFe.infNFe.total.ICMSTot.vTotTrib
                     });
-                    _context.SaveChanges();
+
+                    _context.SaveChangesAsync();
+
                 }
-                return doc.DocumentElement.OuterXml;
+
+                return docXml.DocumentElement.OuterXml;
             }
             else
             {
@@ -118,5 +154,22 @@ namespace nf_xml_api.Controllers
             }
 
         }
+
+        // void ValidationCallBack(object sender, ValidationEventArgs args)
+        // {
+        //     if (args.Severity == XmlSeverityType.Warning)
+        //         Console.WriteLine("\tWarning: Matching schema not found.  No validation occurred." + args.Message);
+        //     else
+        //         Console.WriteLine("\tValidation error: " + args.Message);
+        // }
+        void ValidationEventHandler(object sender, ValidationEventArgs e)
+        {
+            XmlSeverityType type = XmlSeverityType.Warning;
+            if (Enum.TryParse<XmlSeverityType>("Error", out type))
+            {
+                if (type == XmlSeverityType.Error) throw new Exception(e.Message);
+            }
+        }
     }
 }
+
