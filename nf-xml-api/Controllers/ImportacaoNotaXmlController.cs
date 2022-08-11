@@ -46,12 +46,11 @@ namespace nf_xml_api.Controllers
             produtoService.salvarProdutosNota(nota, notaDto, chave, hash);
             totalNotaService.SalvarTotalNota(nota, notaDto, chave, hash);
 
-            return new
+            return Ok(new
             {
-                status = 200,
                 mensagem = "Nota Fiscal importada com sucesso!",
                 erros = errosValidacao
-            };
+            });
         }
     }
 }
