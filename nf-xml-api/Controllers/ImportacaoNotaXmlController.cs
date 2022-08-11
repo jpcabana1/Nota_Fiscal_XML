@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using nf_xml_api.Models;
+using nf_xml_api.Services;
 
 namespace nf_xml_api.Controllers
 {
@@ -20,31 +15,38 @@ namespace nf_xml_api.Controllers
 
         static List<string> erros = new List<string>();
         private readonly NotaFiscalContext _context;
+        private readonly ImportacaoServiceImpl importacaoService;
+        private readonly ProdutoServiceImpl produtoService;
+        private readonly TotalNotaServiceImpl totalNotaService;
+        private readonly XmlNotaServiceImpl xmlNotaService;
 
-        public ImportacaoNotaXmlController(NotaFiscalContext context)
+        public ImportacaoNotaXmlController(NotaFiscalContext context, ImportacaoServiceImpl importacaoService, ProdutoServiceImpl produtoService, TotalNotaServiceImpl totalNotaService, XmlNotaServiceImpl xmlNotaService)
         {
             _context = context;
-
+            this.importacaoService = importacaoService;
+            this.produtoService = produtoService;
+            this.totalNotaService = totalNotaService;
+            this.xmlNotaService = xmlNotaService;
         }
 
         [HttpPost]
         public object testeImportacao()
         {
-            var file = Request.Form.Files[0];
+            IFormFile arquivo = Request.Form.Files[0];
             string chave = Request.Form["chave"];
             string hash = Request.Form["hash"];
 
-            var docXml = new XmlDocument();
-            docXml.Load(file.OpenReadStream());
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(arquivo.OpenReadStream());
 
-            var docValidate = new XDocument();
-            using (var nodeReader = new XmlNodeReader(docXml))
+            var xDocValidar = new XDocument();
+            using (var nodeReader = new XmlNodeReader(xmlDoc))
             {
                 nodeReader.MoveToContent();
-                docValidate = XDocument.Load(nodeReader);
+                xDocValidar = XDocument.Load(nodeReader);
             }
-            var uri = new Uri(Environment.CurrentDirectory + "/PL_009_V4_00_NT_2018_005_v1.10");
 
+            var uri = new Uri(Environment.CurrentDirectory + "/PL_009_V4_00_NT_2018_005_v1.10");
             erros.Clear();
             XmlSchemaSet schema = new XmlSchemaSet();
             schema.Add("http://www.portalfiscal.inf.br/nfe", uri.AbsolutePath + "/procNFe_v4.00.xsd");
@@ -52,12 +54,11 @@ namespace nf_xml_api.Controllers
             schema.Add("http://www.portalfiscal.inf.br/nfe", uri.AbsolutePath + "/leiauteNFe_v4.00.xsd");
             schema.Add("http://www.portalfiscal.inf.br/nfe", uri.AbsolutePath + "/tiposBasico_v4.00.xsd");
             schema.Add("http://www.w3.org/2000/09/xmldsig#", uri.AbsolutePath + "/xmldsig-core-schema_v1.01.xsd");
-            docValidate.Validate(schema, ValidationEventHandler);
+            xDocValidar.Validate(schema, ValidationEventHandler);
 
-
-            if (docXml.DocumentElement != null && erros.Count == 0)
+            if (xmlDoc.DocumentElement != null && erros.Count == 0)
             {
-                using (var reader = new StringReader(docXml.DocumentElement.OuterXml))
+                using (var reader = new StringReader(xmlDoc.DocumentElement.OuterXml))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(nfeProc));
                     nfeProc objDes = (nfeProc)serializer.Deserialize(reader);
@@ -67,7 +68,7 @@ namespace nf_xml_api.Controllers
                         XChave = chave,
                         XHash = hash,
                         XStatusImportacao = "PROCESSANDO",
-                        XmlNota = docXml.DocumentElement.OuterXml
+                        XmlNota = xmlDoc.DocumentElement.OuterXml
                     });
 
                     _context.SaveChanges();
@@ -134,7 +135,7 @@ namespace nf_xml_api.Controllers
 
                 }
 
-                return docXml.DocumentElement.OuterXml;
+                return xmlDoc.DocumentElement.OuterXml;
             }
             else if (erros.Count > 0)
             {
@@ -156,6 +157,44 @@ namespace nf_xml_api.Controllers
                 {
                     erros.Add(e.Message);
                 }
+            }
+        }
+
+
+        [HttpPost("/importarNota")]
+        public object importarNota(string chave, string hash, IFormFile file)
+        {
+            try
+            {
+                //IFormFile arquivo = Request.Form.Files[0];
+                IFormFile arquivo = file;
+                var xmlDoc = xmlNotaService.converterXmlNotaRequest(arquivo);
+                var xDocValidar = xmlNotaService.converterXmlNotaParaValidacao(xmlDoc);
+                List<string> errosValidacao = xmlNotaService.validarSchemaProcNFe_v4_00(xDocValidar);
+
+                importacaoService.importarNotaXml(xmlDoc, chave, hash);
+
+                ImportacaoNotaXml nota = importacaoService.findNotaPorChaveEHash(chave, hash);
+                nfeProc notaDto = xmlNotaService.converterXmlParaDto(xmlDoc);
+
+                produtoService.salvarProdutosNota(nota, notaDto, chave, hash);
+                totalNotaService.SalvarTotalNota(nota, notaDto, chave, hash);
+
+                return new
+                {
+                    status = 200,
+                    mensagem = "Nota Fiscal importada com sucesso!",
+                    erros = errosValidacao
+                };
+            }
+            catch (Exception e)
+            {
+
+                return new
+                {
+                    status = 500,
+                    mensagem = "Erro ao importar nota: " + e.Message
+                };
             }
         }
     }
