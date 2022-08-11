@@ -45,14 +45,6 @@ namespace nf_xml_api.Controllers
             }
             var uri = new Uri(Environment.CurrentDirectory + "/PL_009_V4_00_NT_2018_005_v1.10");
 
-
-            // erros.Clear();
-            // XmlSchemaSet schema = new XmlSchemaSet();
-            // schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/procNFe_v4.00.xsd");
-            // schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/nfe_v4.00.xsd");
-            // schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/leiauteNFe_v4.00.xsd");
-            // schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/tiposBasico_v4.00.xsd");
-            // schema.Add("http://www.w3.org/2000/09/xmldsig#", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNF3E/xmldsig-core-schema_v1.01.xsd");
             erros.Clear();
             XmlSchemaSet schema = new XmlSchemaSet();
             schema.Add("http://www.portalfiscal.inf.br/nfe", uri.AbsolutePath + "/procNFe_v4.00.xsd");
@@ -62,23 +54,6 @@ namespace nf_xml_api.Controllers
             schema.Add("http://www.w3.org/2000/09/xmldsig#", uri.AbsolutePath + "/xmldsig-core-schema_v1.01.xsd");
             docValidate.Validate(schema, ValidationEventHandler);
 
-
-            // XmlReaderSettings Settings = new XmlReaderSettings();
-            // Settings.Schemas.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/procNFe_v4.00.xsd");
-            // Settings.Schemas.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/nfe_v4.00.xsd");
-            // Settings.Schemas.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/leiauteNFe_v4.00.xsd");
-            // Settings.Schemas.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/tiposBasico_v4.00.xsd");
-            // Settings.Schemas.Add("http://www.w3.org/2000/09/xmldsig#", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNF3E/xmldsig-core-schema_v1.01.xsd");
-            // Settings.ValidationEventHandler += new ValidationEventHandler(ValidationCallBack);
-            // Settings.ValidationType = ValidationType.Schema;
-            // try
-            // {
-            //     XmlReader validator = XmlReader.Create(XmlReader.Create(file.OpenReadStream()), Settings);
-            // }
-            // catch (Exception EX)
-            // {
-            //     string ex = EX.ToString();
-            // }
 
             if (docXml.DocumentElement != null && erros.Count == 0)
             {
@@ -172,13 +147,6 @@ namespace nf_xml_api.Controllers
 
         }
 
-        // void ValidationCallBack(object sender, ValidationEventArgs args)
-        // {
-        //     if (args.Severity == XmlSeverityType.Warning)
-        //         Console.WriteLine("\tWarning: Matching schema not found.  No validation occurred." + args.Message);
-        //     else
-        //         Console.WriteLine("\tValidation error: " + args.Message);
-        // }
         static void ValidationEventHandler(object sender, ValidationEventArgs e)
         {
             XmlSeverityType type = XmlSeverityType.Warning;
