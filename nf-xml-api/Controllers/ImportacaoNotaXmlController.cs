@@ -18,15 +18,17 @@ namespace nf_xml_api.Controllers
     public class ImportacaoNotaXmlController : ControllerBase
     {
 
+        static List<string> erros = new List<string>();
         private readonly NotaFiscalContext _context;
 
         public ImportacaoNotaXmlController(NotaFiscalContext context)
         {
             _context = context;
+
         }
 
         [HttpPost]
-        public string testeImportacao()
+        public object testeImportacao()
         {
             var file = Request.Form.Files[0];
             string chave = Request.Form["chave"];
@@ -41,14 +43,25 @@ namespace nf_xml_api.Controllers
                 nodeReader.MoveToContent();
                 docValidate = XDocument.Load(nodeReader);
             }
+            var uri = new Uri(Environment.CurrentDirectory + "/PL_009_V4_00_NT_2018_005_v1.10");
 
+
+            // erros.Clear();
+            // XmlSchemaSet schema = new XmlSchemaSet();
+            // schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/procNFe_v4.00.xsd");
+            // schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/nfe_v4.00.xsd");
+            // schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/leiauteNFe_v4.00.xsd");
+            // schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/tiposBasico_v4.00.xsd");
+            // schema.Add("http://www.w3.org/2000/09/xmldsig#", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNF3E/xmldsig-core-schema_v1.01.xsd");
+            erros.Clear();
             XmlSchemaSet schema = new XmlSchemaSet();
-            schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/procNFe_v4.00.xsd");
-            schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/nfe_v4.00.xsd");
-            schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/leiauteNFe_v4.00.xsd");
-            schema.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/tiposBasico_v4.00.xsd");
-            schema.Add("http://www.w3.org/2000/09/xmldsig#", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNF3E/xmldsig-core-schema_v1.01.xsd");
+            schema.Add("http://www.portalfiscal.inf.br/nfe", uri.AbsolutePath + "/procNFe_v4.00.xsd");
+            schema.Add("http://www.portalfiscal.inf.br/nfe", uri.AbsolutePath + "/nfe_v4.00.xsd");
+            schema.Add("http://www.portalfiscal.inf.br/nfe", uri.AbsolutePath + "/leiauteNFe_v4.00.xsd");
+            schema.Add("http://www.portalfiscal.inf.br/nfe", uri.AbsolutePath + "/tiposBasico_v4.00.xsd");
+            schema.Add("http://www.w3.org/2000/09/xmldsig#", uri.AbsolutePath + "/xmldsig-core-schema_v1.01.xsd");
             docValidate.Validate(schema, ValidationEventHandler);
+
 
             // XmlReaderSettings Settings = new XmlReaderSettings();
             // Settings.Schemas.Add("http://www.portalfiscal.inf.br/nfe", "https://dfe-portal.svrs.rs.gov.br/Schemas/PRNFH/procNFe_v4.00.xsd");
@@ -67,7 +80,7 @@ namespace nf_xml_api.Controllers
             //     string ex = EX.ToString();
             // }
 
-            if (docXml.DocumentElement != null)
+            if (docXml.DocumentElement != null && erros.Count == 0)
             {
                 using (var reader = new StringReader(docXml.DocumentElement.OuterXml))
                 {
@@ -148,6 +161,10 @@ namespace nf_xml_api.Controllers
 
                 return docXml.DocumentElement.OuterXml;
             }
+            else if (erros.Count > 0)
+            {
+                return erros;
+            }
             else
             {
                 return "Falha";
@@ -162,12 +179,15 @@ namespace nf_xml_api.Controllers
         //     else
         //         Console.WriteLine("\tValidation error: " + args.Message);
         // }
-        void ValidationEventHandler(object sender, ValidationEventArgs e)
+        static void ValidationEventHandler(object sender, ValidationEventArgs e)
         {
             XmlSeverityType type = XmlSeverityType.Warning;
             if (Enum.TryParse<XmlSeverityType>("Error", out type))
             {
-                if (type == XmlSeverityType.Error) throw new Exception(e.Message);
+                if (type == XmlSeverityType.Error)
+                {
+                    erros.Add(e.Message);
+                }
             }
         }
     }
