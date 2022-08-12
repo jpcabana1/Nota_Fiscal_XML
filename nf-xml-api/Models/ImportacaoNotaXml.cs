@@ -17,6 +17,7 @@ namespace nf_xml_api.Models
         public DateTime DtImportacao { get; set; }
         public string XStatusImportacao { get; set; } = null!;
         public string XmlNota { get; set; } = null!;
+        public DateTime DtProducao { get; set; }
 
         public virtual ICollection<ProdutoNotum> ProdutoNota { get; set; }
         public virtual ICollection<TotalNotum> TotalNota { get; set; }

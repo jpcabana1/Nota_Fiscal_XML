@@ -33,9 +33,12 @@ namespace nf_xml_api.Models
             modelBuilder.Entity<ImportacaoNotaXml>(entity =>
             {
                 entity.HasKey(e => new { e.IdNota, e.XChave, e.XHash })
-                    .HasName("PK__importac__2F4CB906A35B9690");
+                    .HasName("PK__importac__2F4CB906EC736FFA");
 
                 entity.ToTable("importacao_nota_xml", "NOTA_FISCAL");
+
+                entity.HasIndex(e => new { e.XChave, e.XHash }, "UQ__importac__213FF288A7B456B3")
+                    .IsUnique();
 
                 entity.Property(e => e.IdNota)
                     .ValueGeneratedOnAdd()
@@ -56,6 +59,11 @@ namespace nf_xml_api.Models
                     .HasColumnName("dtImportacao")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.DtProducao)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dtProducao")
+                    .HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.XStatusImportacao)
                     .HasMaxLength(25)
                     .IsUnicode(false)
@@ -69,7 +77,7 @@ namespace nf_xml_api.Models
             modelBuilder.Entity<ProdutoNotum>(entity =>
             {
                 entity.HasKey(e => e.IdProduto)
-                    .HasName("PK__produto___5EEDF7C33D9AF9D9");
+                    .HasName("PK__produto___5EEDF7C39B512924");
 
                 entity.ToTable("produto_nota", "NOTA_FISCAL");
 
@@ -142,13 +150,13 @@ namespace nf_xml_api.Models
                 entity.HasOne(d => d.ImportacaoNotaXml)
                     .WithMany(p => p.ProdutoNota)
                     .HasForeignKey(d => new { d.IdNota, d.XChave, d.XHash })
-                    .HasConstraintName("FK__produto_nota__3A81B327");
+                    .HasConstraintName("FK__produto_nota__60A75C0F");
             });
 
             modelBuilder.Entity<TotalNotum>(entity =>
             {
                 entity.HasKey(e => e.IdTotal)
-                    .HasName("PK__total_no__8348CCEF7899BF06");
+                    .HasName("PK__total_no__8348CCEF9725D6C5");
 
                 entity.ToTable("total_nota", "NOTA_FISCAL");
 
@@ -249,7 +257,7 @@ namespace nf_xml_api.Models
                 entity.HasOne(d => d.ImportacaoNotaXml)
                     .WithMany(p => p.TotalNota)
                     .HasForeignKey(d => new { d.IdNota, d.XChave, d.XHash })
-                    .HasConstraintName("FK__total_nota__3D5E1FD2");
+                    .HasConstraintName("FK__total_nota__6383C8BA");
             });
 
             OnModelCreatingPartial(modelBuilder);

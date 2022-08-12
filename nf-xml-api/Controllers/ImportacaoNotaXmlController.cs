@@ -33,14 +33,14 @@ namespace nf_xml_api.Controllers
             var xDocValidar = xmlNotaService.converterXmlNotaParaValidacao(xmlDoc);
             List<string> errosValidacao = xmlNotaService.validarSchemaProcNFe_v4_00(xDocValidar);
 
-            importacaoService.importarNotaXml(xmlDoc, chave, hash);
+            importacaoService.importarNotaXml(xmlDoc, chave, hash, dtProducao);
 
             ImportacaoNotaXml nota = importacaoService.findNotaPorChaveEHash(chave, hash);
             TNfeProc notaDto = xmlNotaService.converterXmlParaDto(xmlDoc);
 
             produtoService.salvarProdutosNota(nota, notaDto, chave, hash);
             totalNotaService.SalvarTotalNota(nota, notaDto, chave, hash);
-
+ 
             return Ok(new
             {
                 mensagem = "Nota Fiscal importada com sucesso!",

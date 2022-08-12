@@ -61,6 +61,17 @@ namespace NotaFiscal
             dtImportacao.AddAnnotation("Relational:DefaultValueSql", "(getdate())");
             dtImportacao.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
 
+            var dtProducao = runtimeEntityType.AddProperty(
+                "DtProducao",
+                typeof(DateTime),
+                propertyInfo: typeof(ImportacaoNotaXml).GetProperty("DtProducao", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                fieldInfo: typeof(ImportacaoNotaXml).GetField("<DtProducao>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly),
+                valueGenerated: ValueGenerated.OnAdd);
+            dtProducao.AddAnnotation("Relational:ColumnName", "dtProducao");
+            dtProducao.AddAnnotation("Relational:ColumnType", "datetime");
+            dtProducao.AddAnnotation("Relational:DefaultValueSql", "(getdate())");
+            dtProducao.AddAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
             var xStatusImportacao = runtimeEntityType.AddProperty(
                 "XStatusImportacao",
                 typeof(string),
@@ -83,7 +94,12 @@ namespace NotaFiscal
             var key = runtimeEntityType.AddKey(
                 new[] { idNota, xChave, xHash });
             runtimeEntityType.SetPrimaryKey(key);
-            key.AddAnnotation("Relational:Name", "PK__importac__2F4CB906A35B9690");
+            key.AddAnnotation("Relational:Name", "PK__importac__2F4CB906EC736FFA");
+
+            var uQ__importac__213FF288A7B456B3 = runtimeEntityType.AddIndex(
+                new[] { xChave, xHash },
+                name: "UQ__importac__213FF288A7B456B3",
+                unique: true);
 
             return runtimeEntityType;
         }

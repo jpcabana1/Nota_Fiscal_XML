@@ -15,7 +15,7 @@ namespace nf_xml_api.Services
 
         }
 
-        public void importarNotaXml(XmlDocument xmlDoc, string chave, string hash)
+        public void importarNotaXml(XmlDocument xmlDoc, string chave, string hash, DateTime dtProducao)
         {
             if (this.findNotaPorChaveEHash(chave, hash) == null && xmlDoc.DocumentElement != null)
             {
@@ -23,7 +23,8 @@ namespace nf_xml_api.Services
                 {
                     XChave = chave,
                     XHash = hash,
-                    XStatusImportacao = "PROCESSANDO",
+                    XStatusImportacao = "PROCESSADO",
+                    DtProducao = dtProducao,
                     XmlNota = xmlDoc.DocumentElement.OuterXml
                 });
 
@@ -41,6 +42,17 @@ namespace nf_xml_api.Services
                             where importacaoNota.XChave == chave && importacaoNota.XHash == hash
                             select importacaoNota;
             return queryNota.FirstOrDefault();
+        }
+
+        public void attStatusNota(string chave, string hash)
+        {
+            var nota = findNotaPorChaveEHash(chave, hash);
+            if(nota != null){
+                nota.XStatusImportacao = "PROCESSADO";
+                _context.Update(nota);
+                _context.SaveChangesAsync();
+            }
+            throw new NotImplementedException();
         }
     }
 }

@@ -194,7 +194,7 @@ namespace NotaFiscal
             var key = runtimeEntityType.AddKey(
                 new[] { idProduto });
             runtimeEntityType.SetPrimaryKey(key);
-            key.AddAnnotation("Relational:Name", "PK__produto___5EEDF7C33D9AF9D9");
+            key.AddAnnotation("Relational:Name", "PK__produto___5EEDF7C39B512924");
 
             var index = runtimeEntityType.AddIndex(
                 new[] { idNota, xChave, xHash });
@@ -224,7 +224,7 @@ namespace NotaFiscal
                 propertyInfo: typeof(ImportacaoNotaXml).GetProperty("ProdutoNota", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly),
                 fieldInfo: typeof(ImportacaoNotaXml).GetField("<ProdutoNota>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 
-            runtimeForeignKey.AddAnnotation("Relational:Name", "FK__produto_nota__3A81B327");
+            runtimeForeignKey.AddAnnotation("Relational:Name", "FK__produto_nota__60A75C0F");
             return runtimeForeignKey;
         }
 
