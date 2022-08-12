@@ -1,10 +1,5 @@
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using nf_xml_api.Models;
-using nf_xml_api.Services;
 
 namespace nf_xml_api.Controllers
 {
@@ -31,9 +26,9 @@ namespace nf_xml_api.Controllers
         }
 
         [HttpPost("/importarNota")]
-        public object importarNota(string chave, string hash, DateTime dtProducao, IFormFile file)
+        public object importarNota(string chave, string hash, DateTime dtProducao, IFormFile arquivoXml)
         {
-            IFormFile arquivo = file;
+            IFormFile arquivo = arquivoXml;
             var xmlDoc = xmlNotaService.converterXmlNotaRequest(arquivo);
             var xDocValidar = xmlNotaService.converterXmlNotaParaValidacao(xmlDoc);
             List<string> errosValidacao = xmlNotaService.validarSchemaProcNFe_v4_00(xDocValidar);
@@ -41,7 +36,7 @@ namespace nf_xml_api.Controllers
             importacaoService.importarNotaXml(xmlDoc, chave, hash);
 
             ImportacaoNotaXml nota = importacaoService.findNotaPorChaveEHash(chave, hash);
-            nfeProc notaDto = xmlNotaService.converterXmlParaDto(xmlDoc);
+            TNfeProc notaDto = xmlNotaService.converterXmlParaDto(xmlDoc);
 
             produtoService.salvarProdutosNota(nota, notaDto, chave, hash);
             totalNotaService.SalvarTotalNota(nota, notaDto, chave, hash);
@@ -49,7 +44,7 @@ namespace nf_xml_api.Controllers
             return Ok(new
             {
                 mensagem = "Nota Fiscal importada com sucesso!",
-                erros = errosValidacao
+                validacoesSchema = errosValidacao
             });
         }
     }

@@ -46,15 +46,15 @@ public class XmlNotaServiceImpl : XmlNotaService
             }
         }
     }
-    public nfeProc converterXmlParaDto(XmlDocument xmlDoc)
+    public TNfeProc converterXmlParaDto(XmlDocument xmlDoc)
     {
-        nfeProc objDes = null;
+        TNfeProc objDes = null;
         if (xmlDoc.DocumentElement != null)
         {
             using (var reader = new StringReader(xmlDoc.DocumentElement.OuterXml))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(nfeProc));
-                objDes = (nfeProc)serializer.Deserialize(reader);
+                XmlSerializer serializer = new XmlSerializer(typeof(TNfeProc));
+                objDes = (TNfeProc)serializer.Deserialize(reader);
             }
         }
         return objDes;
