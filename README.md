@@ -22,4 +22,4 @@ projeto para gerar planilha de gasto a partir de um NFC-e
 - docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=password" -p 1401:1433 --name NOTA_FISCAL_DEV -d mcr.microsoft.com/mssql/server:2022-latest
 
 # **Swagger local**:
-- https://localhost:port/swagger/index.html
+- https://localhost:5001/swagger/index.html
