@@ -24,7 +24,7 @@ public class XmlNotaServiceImpl : XmlNotaService
     }
     public List<string> validarSchemaProcNFe_v4_00(XDocument xDocValidar)
     {
-        var uri = new Uri(Environment.CurrentDirectory + "/PL_009_V4_00_NT_2018_005_v1.10");
+        var uri = new Uri(Environment.CurrentDirectory + "/SchemasNFE");
         erros.Clear();
         XmlSchemaSet schema = new XmlSchemaSet();
         schema.Add("http://www.portalfiscal.inf.br/nfe", uri.AbsolutePath + "/procNFe_v4.00.xsd");
