@@ -42,3 +42,10 @@ Projeto para gerar planilha de gasto a partir de um NFC-e.
 - Executar scripts da pasta: ./scripts-migration/nfe-stage.sql
 - *ASPNETCORE_ENVIRONMENT*=Staging
 - _swagger STAGE:_ http://localhost:5003/swagger/index.html
+
+## PROD
+- *Iniciar app*: docker-compose --file docker-compose-prod.yml -p nfe-PROD up -d --build
+- *Connection string*: **Server=localhost, 1404;Database=master;User Id=sa;Password=!n0ta_app**
+- Executar scripts da pasta: ./scripts-migration/nfe-prod.sql
+- *ASPNETCORE_ENVIRONMENT*=Production
+- _swagger PROD:_ http://localhost:5004/swagger/index.html

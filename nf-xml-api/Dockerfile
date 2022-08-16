@@ -7,7 +7,7 @@ RUN dotnet publish --configuration release --output out
 
 FROM mcr.microsoft.com/dotnet/aspnet:latest
 WORKDIR /app
-ENV ASPNETCORE_ENVIRONMENT=Staging
+ENV ASPNETCORE_ENVIRONMENT=Production
 
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "nf-xml-api.dll"]
