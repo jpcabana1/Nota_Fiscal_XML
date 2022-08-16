@@ -37,6 +37,6 @@ public class TotalNotaServiceImpl : TotalNotaService
             VTotTrib = decimal.TryParse(dto.NFe.infNFe.total.ICMSTot.vTotTrib, out decimal VTotTrib) ? VTotTrib : 0
         });
 
-        _context.SaveChangesAsync();
+        _context.SaveChanges();
     }
 }
