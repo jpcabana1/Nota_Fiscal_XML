@@ -20,7 +20,8 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 Console.WriteLine("Environment: " + app.Environment.EnvironmentName);
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment()
+    || app.Environment.EnvironmentName == "LocalDevelopment")
 {
     app.UseSwagger();
     app.UseSwaggerUI();
