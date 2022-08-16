@@ -1,0 +1,21 @@
+version: '3.9'
+services:
+  app:
+    container_name: nfe-api
+    build:
+      context: ./
+      dockerfile: Dockerfile-DEV
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5002:80"
+    depends_on:
+      - db
+  db:
+    container_name: nota-fiscal-dev
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    environment:
+      SA_PASSWORD: "!n0ta_app"
+      ACCEPT_EULA: "Y"
+    ports:
+      - 1402:1433
