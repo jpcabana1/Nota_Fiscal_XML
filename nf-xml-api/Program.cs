@@ -21,7 +21,8 @@ var app = builder.Build();
 
 Console.WriteLine("Environment: " + app.Environment.EnvironmentName);
 if (app.Environment.IsDevelopment()
-    || app.Environment.EnvironmentName == "LocalDevelopment")
+    || app.Environment.IsEnvironment("LocalDevelopment")
+    || app.Environment.IsStaging())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

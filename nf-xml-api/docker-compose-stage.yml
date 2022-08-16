@@ -1,21 +1,21 @@
 version: '3.9'
 services:
   app:
-    container_name: nfe-api-dev
+    container_name: nfe-api-stage
     build:
       context: ./
-      dockerfile: Dockerfile-DEV
+      dockerfile: Dockerfile-STAGE
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Staging
     ports:
-      - "5002:80"
+      - "5003:80"
     depends_on:
       - db
   db:
-    container_name: nota-fiscal-dev
+    container_name: nota-fiscal-stage
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     environment:
       SA_PASSWORD: "!n0ta_app"
       ACCEPT_EULA: "Y"
     ports:
-      - 1402:1433
+      - 1403:1433
