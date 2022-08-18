@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using nf_xml_api.Models;
 using nf_xml_api.Services;
 
@@ -15,14 +16,36 @@ builder.Services.AddScoped<XmlNotaService, XmlNotaServiceImpl>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(
+    options =>
+{
+    string titulo = "";
+    if (builder.Environment.IsEnvironment("LocalDevelopment"))
+    {
+        titulo = "NFE-Importação-LOCAL";
+    }
+    else if (builder.Environment.IsDevelopment())
+    {
+        titulo = "NFE-Importação-DEV";
+    }
+    else if (builder.Environment.IsStaging())
+    {
+        titulo = "NFE-Importação-STAGE";
+    }
+
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "1.0.1",
+        Title = titulo,
+        Description = "Projeto para gerar planilha de gasto a partir de um NFC-e.",
+    });
+}
+);
 
 var app = builder.Build();
 
 Console.WriteLine("Environment: " + app.Environment.EnvironmentName);
-if (app.Environment.IsDevelopment()
-    || app.Environment.IsEnvironment("LocalDevelopment")
-    || app.Environment.IsStaging())
+if (!app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
