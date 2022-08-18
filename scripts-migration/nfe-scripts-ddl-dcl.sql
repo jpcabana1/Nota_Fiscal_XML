@@ -8,7 +8,6 @@ CREATE USER nota_app FOR LOGIN nota_app;
 
 
 CREATE SCHEMA NOTA_FISCAL AUTHORIZATION nota_app;
-GO
 
 CREATE TABLE NOTA_FISCAL.importacao_nota_xml(
     idNota BIGINT NOT NULL IDENTITY(1,1),
