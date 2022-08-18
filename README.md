@@ -25,26 +25,26 @@ Projeto para gerar planilha de gasto a partir de um NFC-e.
 - **_Docker Build_**: docker build --tag nfe-importacao-api --file Dockerfile .
 - _Docker Run:_ docker run -e "ASPNETCORE_ENVIRONMENT=LocalDevelopment" -p 5001:80 --name nfe-api --link NOTA_FISCAL_LOCAL nfe-importacao-api
 - *Connection string*: **Server=localhost, 1401;Database=master;User Id=sa;Password=!n0ta_app**
-- Executar scripts da pasta: ./scripts-migration/nfe-local.sql
+- Executar scripts da pasta: ./scripts-migration/nfe-scripts-ddl-dcl.sql
 - *ASPNETCORE_ENVIRONMENT*=LocalDevelopment
 - _swagger local:_ https://localhost:5001/swagger/index.html
 
 ## DEV
 - *Iniciar app*: docker-compose --file docker-compose-dev.yml -p nfe-DEV up -d --build
 - *Connection string*: **Server=localhost, 1402;Database=master;User Id=sa;Password=!n0ta_app**
-- Executar scripts da pasta: ./scripts-migration/nfe-dev.sql
+- Executar scripts da pasta: ./scripts-migration/nfe-scripts-ddl-dcl.sql
 - *ASPNETCORE_ENVIRONMENT*=Development
 - _swagger DEV:_ http://localhost:5002/swagger/index.html
 
 ## STAGE
 - *Iniciar app*: docker-compose --file docker-compose-stage.yml -p nfe-STAGE up -d --build
 - *Connection string*: **Server=localhost, 1403;Database=master;User Id=sa;Password=!n0ta_app**
-- Executar scripts da pasta: ./scripts-migration/nfe-stage.sql
+- Executar scripts da pasta: ./scripts-migration/nfe-scripts-ddl-dcl.sql
 - *ASPNETCORE_ENVIRONMENT*=Staging
 - _swagger STAGE:_ http://localhost:5003/swagger/index.html
 
 ## PROD
 - *Iniciar app*: docker-compose --file docker-compose-prod.yml -p nfe-PROD up -d --build
 - *Connection string*: **Server=localhost, 1404;Database=master;User Id=sa;Password=!n0ta_app**
-- Executar scripts da pasta: ./scripts-migration/nfe-prod.sql
+- Executar scripts da pasta: ./scripts-migration/nfe-scripts-ddl-dcl.sql
 - *ASPNETCORE_ENVIRONMENT*=Production
