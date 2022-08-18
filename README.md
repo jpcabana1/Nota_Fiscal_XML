@@ -12,7 +12,7 @@ Projeto para gerar planilha de gasto a partir de um NFC-e.
 - dotnet tool install --global dotnet-ef
 
 ### _dbcontext scaffold :_
-- dotnet ef dbcontext scaffold Name=NFE_IMPORTACAO Microsoft.EntityFrameworkCore.SqlServer -o Models -c NotaFiscalContext
+- dotnet ef dbcontext scaffold Name=NOTA_FISCAL Microsoft.EntityFrameworkCore.SqlServer -o Models -c NotaFiscalContext
 - dotnet ef dbcontext optimize -o Models -n NotaFiscal -c NotaFiscalContext
 
 ### _Aspnet CodeGenerator :_
@@ -21,9 +21,9 @@ Projeto para gerar planilha de gasto a partir de um NFC-e.
 # **Ambientes**
 
 ## Local
-- *Banco de Dados Local:* docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=!n0ta_app" -p 1401:1433 --name NFE_IMPORTACAO -d mcr.microsoft.com/mssql/server:2022-latest
-- **_Docker Build_**: *docker build --tag nfe-importacao-api --file Dockerfile .*
-- _Docker Run:_ docker run -e "ASPNETCORE_ENVIRONMENT=LocalDevelopment" -p 5001:80 --name nfe-api --link NFE_IMPORTACAO nfe-importacao-api
+- *Banco de Dados Local:* docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=!n0ta_app" -p 1401:1433 --name NOTA_FISCAL_LOCAL -d mcr.microsoft.com/mssql/server:2022-latest
+- _Docker Build_: docker build --tag nfe-importacao-api --file Dockerfile .
+- _Docker Run:_ docker run -e "ASPNETCORE_ENVIRONMENT=LocalDevelopment" -p 5001:80 --name nfe-api --link NOTA_FISCAL_LOCAL nfe-importacao-api
 - *Connection string*: **Server=localhost, 1401;Database=master;User Id=sa;Password=!n0ta_app**
 - Executar scripts da pasta: ./scripts-migration/nfe-local.sql
 - *ASPNETCORE_ENVIRONMENT*=LocalDevelopment
