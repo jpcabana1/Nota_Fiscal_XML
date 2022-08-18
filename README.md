@@ -2,7 +2,7 @@
 Projeto para gerar planilha de gasto a partir de um NFC-e.
 
 # **Comandos NPM**:
-- npm create vite@latest recursodeglosa-front -- --template react-ts
+- npm create vite@latest nf-xml-front --template react-ts
 - npm install react-router-dom@6
 - npm install react-bootstrap bootstrap
 - npm i --save @fortawesome/fontawesome-svg-core
