@@ -1,6 +1,26 @@
 # Nota_Fiscal_XML
 Projeto para gerar planilha de gasto a partir de um NFC-e.
 
+# **Comandos NPM**:
+- npm create vite@latest recursodeglosa-front -- --template react-ts
+- npm install react-router-dom@6
+- npm install react-bootstrap bootstrap
+- npm i --save @fortawesome/fontawesome-svg-core
+- npm install --save @fortawesome/free-solid-svg-icons
+- npm install --save @fortawesome/react-fontawesome
+- npm install @reduxjs/toolkit
+- npm install redux
+- npm install react-redux
+- npm install axios
+- npm install react-hook-form
+- npm install react-datepicker --save
+- npm install react-table --save 
+- npm i react-vertical-timeline-component
+
+## Levantar ambiente local:
+- npm install
+- npm run dev
+
 # **Comandos .NET**:
 ### _Dependencies_:
 - dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
