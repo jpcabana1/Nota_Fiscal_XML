@@ -10,6 +10,10 @@ public class XmlNotaServiceImpl : XmlNotaService
     {
         var xmlDoc = new XmlDocument();
         xmlDoc.Load(arquivo.OpenReadStream());
+        if(xmlDoc.GetElementsByTagName("nfeProc").Count < 2){
+            throw new Exception("XML não reconhecido!");
+        }
+        xmlDoc.LoadXml(xmlDoc.GetElementsByTagName("nfeProc")[1].OuterXml);
         return xmlDoc;
     }
     public XDocument converterXmlNotaParaValidacao(XmlDocument xmlNota)

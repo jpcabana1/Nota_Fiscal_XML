@@ -51,8 +51,6 @@ if (!app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-
-
 app.UseExceptionHandler(options =>
     {
         options.Run(async context =>
