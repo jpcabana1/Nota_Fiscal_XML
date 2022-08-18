@@ -2,13 +2,16 @@ version: '3.9'
 services:
   app:
     container_name: nfe-api-dev
-    build:
-      context: ./
-      dockerfile: Dockerfile-DEV
+    image: nfe-importacao-api
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile-DEV
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "5002:80"
+    networks:
+      - back-end
     depends_on:
       - db
   db:
@@ -19,3 +22,8 @@ services:
       ACCEPT_EULA: "Y"
     ports:
       - 1402:1433
+    networks:
+      - back-end
+      
+networks:
+  back-end:
