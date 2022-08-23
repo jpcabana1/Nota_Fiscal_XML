@@ -1,0 +1,3 @@
+Use master;
+CREATE DATABASE NFE_IMPORTACAO;
+
