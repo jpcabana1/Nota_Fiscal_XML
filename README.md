@@ -45,7 +45,9 @@ Projeto para gerar planilha de gasto a partir de um NFC-e.
 - **_Docker Build_**: docker build --tag nfe-importacao-api --file Dockerfile .
 - _Docker Run:_ docker run -e "ASPNETCORE_ENVIRONMENT=LocalDevelopment" -p 5001:80 --name nfe-api --link NOTA_FISCAL_LOCAL nfe-importacao-api
 - *Connection string*: **Server=localhost, 1401;Database=master;User Id=sa;Password=!n0ta_app**
-- Executar scripts da pasta: ./scripts-migration/nfe-scripts-ddl-dcl.sql
+- Executar scripts: 
+- **Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser** 
+- **.\setup-migration-local.ps1**
 - *ASPNETCORE_ENVIRONMENT*=LocalDevelopment
 - _swagger local:_ https://localhost:5001/swagger/index.html
 
