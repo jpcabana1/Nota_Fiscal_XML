@@ -15,3 +15,4 @@ Write-Host "Copiando o arquivo ScriptsSQL.sh para o container..."
 docker cp ./database/scripts-migration/ScriptsSQL.sh  NOTA_FISCAL_LOCAL:/var/opt/mssql/data/ 
 Write-Host "Iniciando migração do Banco de Dados..."
 docker exec -it NOTA_FISCAL_LOCAL "bash" /var/opt/mssql/data/ScriptsSQL.sh
+Read-Host -Prompt "Pressione Enter para sair."
