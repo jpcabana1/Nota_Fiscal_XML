@@ -1,18 +1,20 @@
-param([string] $nomeContainer, [switch] $initDB)
+param([string] $nomeContainer, [string] $initDB)
 
 Write-Host "nomeContainer: $nomeContainer"
 
 switch ($initDB) {
-    "S" { 
+    'S' { 
         docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=!n0ta_app" -p 1401:1433 --name $nomeContainer -d mcr.microsoft.com/mssql/server:2022-latest
         Write-Host "Iniciando Banco de Dados..."
         Start-Sleep -Seconds 6
      }
-    "N" { 
+    'N' { 
         Write-Host "Copiando arquivos para o container $nomeContainer..."
+        Start-Sleep -Seconds 2
      }
     Default { 
         Write-Host "Copiando arquivos para o container $nomeContainer..."
+        Start-Sleep -Seconds 2
      }
 }
 
@@ -33,6 +35,4 @@ docker cp ./database/scripts-migration/ScriptsSQL.sh  "${nomeContainer}:/var/opt
 
 Write-Host "Iniciando migração do Banco de Dados..."
 docker exec -it $nomeContainer "bash" /var/opt/mssql/data/ScriptsSQL.sh
-Read-Host -Prompt "Banco de dados criado! Pressione Enter para sair..."
-# docker stop nf-local
-# docker rm nf-local
+Read-Host -Prompt "Pressione Enter para sair..."
