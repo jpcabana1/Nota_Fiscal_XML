@@ -10,11 +10,11 @@ switch ($initDB) {
      }
     'N' { 
         Write-Host "Copiando arquivos para o container $nomeContainer..."
-        Start-Sleep -Seconds 2
+        Start-Sleep -Seconds 4
      }
     Default { 
         Write-Host "Copiando arquivos para o container $nomeContainer..."
-        Start-Sleep -Seconds 2
+        Start-Sleep -Seconds 4
      }
 }
 

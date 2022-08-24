@@ -4,14 +4,15 @@ Projeto para gerar planilha de gasto a partir de um NFC-e.
 # *Ambientes:*
 
 ## Local
-- *Connection string*: **Server=localhost, 1401;Database=master;User Id=sa;Password=!n0ta_app**
 - _SQL Server Migration:_ .\setup-migration.ps1 -nomeContainer "nfe-local" -initDB "S"
+- *Connection string*: **Server=localhost, 1401;Database=master;User Id=sa;Password=!n0ta_app**
 - *ASPNETCORE_ENVIRONMENT*=LocalDevelopment
 - _swagger local:_ https://localhost:5001/swagger/index.html
 
 ## DEV
-- *Iniciar app*: docker-compose --file docker-compose-dev.yml -p nfe-dev up -d --build
+- *Iniciar api*: docker-compose --file docker-compose-dev.yml -p nfe-dev up -d --build
 - _SQL Server Migration:_ .\setup-migration.ps1 -nomeContainer "nota-fiscal-dev" -initDB "N"
+- *Iniciar app*: npm start
 - *Connection string*: **Server=localhost, 1402;Database=master;User Id=sa;Password=!n0ta_app**
 - *ASPNETCORE_ENVIRONMENT*=Development
 - _swagger DEV:_ http://localhost:5002/swagger/index.html
@@ -45,6 +46,8 @@ Projeto para gerar planilha de gasto a partir de um NFC-e.
 - npm i --save @fortawesome/fontawesome-svg-core
 - npm install --save @fortawesome/free-solid-svg-icons
 - npm install --save @fortawesome/react-fontawesome
+- npm i -D env-cmd
+- npm install -g serve
 - npm install @reduxjs/toolkit
 - npm install redux
 - npm install react-redux
